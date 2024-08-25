@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
 
-export default function QuestionComponent({ question, onAnswer }) {
-  const [selectedIndex, setSelectedIndex] = useState(null);
-
+export default function QuestionComponent({
+  question,
+  onAnswer,
+  selectedIndex,
+  setSelectedIndex,
+  isTimeUp,
+}) {
   useEffect(() => {
     // Reset selectedIndex when the question changes
     setSelectedIndex(null);
@@ -37,7 +41,7 @@ export default function QuestionComponent({ question, onAnswer }) {
           key={index}
           onClick={() => handleChoice(index, option)}
           className={getButtonClass(index, option)}
-          disabled={selectedIndex !== null}
+          disabled={selectedIndex !== null || isTimeUp}
         >
           {option}
         </button>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import QuestionComponent from "./QuestionComponent";
 
 export default function QuizScreen({
@@ -7,17 +7,31 @@ export default function QuizScreen({
   totalQuestions,
   quizData,
 }) {
-  // if the passed bool is true, then it will dispatch the type to Answer_Question, and make the state isCorrect to 1, which gets added to the score of the inital value to calaculate the final score of the quiz
+  const [selectedIndex, setSelectedIndex] = useState(null);
+  const [timeLeft, setTimeLeft] = useState(5);
+  const [isTimeUp, setIsTimeUp] = useState(false);
 
-  const handleAnswer = (isCorrect) => {
-    dispatch({ type: "ANSWER_QUESTION", payload: isCorrect ? 1 : 0 });
-  };
+  useEffect(() => {
+    if (timeLeft === 0) {
+      setIsTimeUp(true); // Mark that time is up
+      return;
+    }
+
+    const intervalId = setInterval(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [timeLeft]);
 
   const handleNext = () => {
     if (currentQuestionIndex === totalQuestions - 1) {
       dispatch({ type: "FINISH_QUIZ" });
     } else {
       dispatch({ type: "NEXT_QUESTION" });
+      setSelectedIndex(null); // Reset selected answer for the next question
+      setIsTimeUp(false); // Reset time up flag
+      setTimeLeft(5); // Reset timer for next question
     }
   };
 
@@ -25,11 +39,22 @@ export default function QuizScreen({
     <div className="quiz-screen">
       <QuestionComponent
         question={quizData[currentQuestionIndex]}
-        onAnswer={handleAnswer}
+        onAnswer={(isCorrect) =>
+          dispatch({ type: "ANSWER_QUESTION", payload: isCorrect ? 1 : 0 })
+        }
+        selectedIndex={selectedIndex}
+        setSelectedIndex={setSelectedIndex}
+        isTimeUp={isTimeUp} // Disable options if time is up
       />
-      <button onClick={handleNext}>
+
+      <button
+        onClick={handleNext}
+        disabled={!isTimeUp && selectedIndex == null}
+      >
         {currentQuestionIndex === totalQuestions - 1 ? "Finish" : "Next"}
       </button>
+
+      <div>Time Left: {timeLeft}s</div>
     </div>
   );
 }

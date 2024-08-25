@@ -76,14 +76,17 @@ export default function App() {
     <div className="App">
       <h1>THE ULTIMATE QUIZ</h1>
       <hr />
+
       {state.screen === "start" && (
         <StartScreen dispatch={dispatch} totalQuestions={quizData.length} />
       )}
+
       {state.screen === "quiz" && (
         <>
           <p className="question-number">
             Question {state.currentQuestionIndex + 1} of {quizData.length}
           </p>
+
           <QuizScreen
             dispatch={dispatch}
             currentQuestionIndex={state.currentQuestionIndex}
@@ -92,6 +95,7 @@ export default function App() {
           />
         </>
       )}
+
       {state.screen === "finish" && (
         <FinishScreen
           score={state.score}

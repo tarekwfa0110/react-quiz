@@ -7,6 +7,8 @@ export default function QuizScreen({
   totalQuestions,
   quizData,
 }) {
+  // if the passed bool is true, then it will dispatch the type to Answer_Question, and make the state isCorrect to 1, which gets added to the score of the inital value to calaculate the final score of the quiz
+
   const handleAnswer = (isCorrect) => {
     dispatch({ type: "ANSWER_QUESTION", payload: isCorrect ? 1 : 0 });
   };
